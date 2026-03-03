@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#0a0a0f"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>SangeetX</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="shell">
+  <div class="top-row">
+
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-ic"><span class="mi">music_note</span></div>
+        <div><div class="logo-nm">SangeetX</div><div class="logo-sb">Full Songs · Free</div></div>
+      </div>
+      <nav class="snav">
+        <div class="sni on" onclick="goNav('home',this)"><span class="mi">home</span>Home</div>
+        <div class="sni"    onclick="goNav('sv',this)"><span class="mi">search</span>Search</div>
+        <div class="sni"    onclick="goNav('rv',this)"><span class="mi">trending_up</span>Trending<span class="snb">🔥</span></div>
+        <div class="sni"    onclick="goNav('plv',this)"><span class="mi">playlist_play</span>Playlist</div>
+        <div class="scat">Library</div>
+        <div class="sni"    onclick="goNav('recv',this)"><span class="mi">history</span>Recent</div>
+        <div class="sni"    onclick="goNav('lkv',this)"><span class="mi">favorite</span>Liked</div>
+      </nav>
+      <div class="sq-head"><span class="sq-lbl">Up Next</span><button class="sq-clr" onclick="clearQ()">Clear</button></div>
+      <div class="sq-wrap"><div id="qEl"></div></div>
+    </aside>
+
+    <div class="maincol">
+      <div class="topbar">
+        <div class="srch"><span class="mi">search</span>
+          <input id="sIn" type="text" placeholder="Search any song, artist, album…" autocomplete="off"/>
+        </div>
+        <div class="tb-r">
+          <button class="ib" id="iBsh" onclick="toggleShuffle()" title="Shuffle"><span class="mi">shuffle</span></button>
+          <button class="ib" id="iBrp" onclick="toggleRepeat()"  title="Repeat"><span class="mi">repeat</span></button>
+          <button class="ib" id="iBEQ" onclick="toggleEQ()"      title="Equalizer"><span class="mi">equalizer</span></button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <div class="view on" id="home">
+          <div class="nphero">
+            <div class="np-ph" id="npArt"><span class="mi">music_note</span></div>
+            <div class="np-info">
+              <div class="np-r1"><span class="np-dot"></span><span class="np-lbl" id="npStat">Ready</span></div>
+              <div class="np-tit" id="npTit">Pick a track to start 🎵</div>
+              <div class="np-art" id="npArt2">Full songs · 320kbps · JioSaavn</div>
+              <div onclick="seekHero(event)" style="cursor:pointer">
+                <div class="np-prog" id="npProgW"><div class="np-fill" id="npFill"></div></div>
+                <div class="np-times"><span id="npCur">0:00</span><span id="npDur">—</span></div>
+              </div>
+              <div class="np-wave" id="npWave" style="display:none">
+                <div class="nw"></div><div class="nw"></div><div class="nw"></div>
+                <div class="nw"></div><div class="nw"></div><div class="nw"></div><div class="nw"></div>
+              </div>
+            </div>
+          </div>
+          <div class="chips" id="chipsEl"></div>
+          <div class="sec"><div class="sec-title" id="hTit">Bollywood</div><span class="pill p-sv">JioSaavn</span></div>
+          <div class="cards" id="hCards"></div>
+        </div>
+
+        <div class="view" id="sv">
+          <div class="sec"><div class="sec-title" id="sTit">Search Results</div></div>
+          <div class="tl" id="sList"></div>
+          <div class="empty" id="sEmpty" style="display:none"><span class="mi">search</span><p>No results found</p></div>
+        </div>
+
+        <div class="view" id="rv">
+          <div class="sec"><div class="sec-title">Trending Now</div><span class="pill p-re">🔥 VIRAL</span></div>
+          <div class="reel-row" id="reelRow"></div>
+          <div class="sec" style="margin-top:6px"><div class="sec-title">All Tracks</div></div>
+          <div class="tl" id="reelList"></div>
+        </div>
+
+        <div class="view" id="plv">
+          <div class="pl-hero">
+            <div class="pl-icon"><span class="mi">playlist_play</span></div>
+            <div class="pl-info"><div class="pl-name">My Playlist</div><div class="pl-sub" id="plCnt">No songs yet</div></div>
+            <div class="pl-acts">
+              <button class="pbtn pb-y" onclick="playPl()"><span class="mi" style="color:#fff;font-size:15px">play_arrow</span>Play All</button>
+              <button class="pbtn pb-g" onclick="clearPl()"><span class="mi" style="font-size:15px;color:#ef4565">delete_sweep</span>Clear</button>
+            </div>
+          </div>
+          <div class="tl" id="plList"></div>
+          <div class="empty" id="plEmpty"><span class="mi">playlist_add</span><p>Add songs with the + button</p></div>
+        </div>
+
+        <div class="view" id="recv">
+          <div class="sec"><div class="sec-title">Recently Played</div></div>
+          <div class="tl" id="recList"></div>
+          <div class="empty" id="recEmpty"><span class="mi">history</span><p>Your history appears here</p></div>
+        </div>
+
+        <div class="view" id="lkv">
+          <div class="sec">
+            <div class="sec-title">Liked Songs</div>
+            <span id="lkCnt" style="font-size:.75rem;color:var(--t3);font-weight:600"></span>
+            <button class="pbtn pb-y" onclick="playLiked()" style="margin-left:auto;padding:7px 14px">
+              <span class="mi" style="color:#fff;font-size:15px">play_arrow</span>Play All
+            </button>
+          </div>
+          <div class="tl" id="lkList"></div>
+          <div class="empty" id="lkEmpty"><span class="mi">favorite_border</span><p>Like songs with ♥</p></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="player-bar"><div class="pb">
+    <div class="pb-l">
+      <div class="pb-iw" id="pbIW"><div class="pb-iph"><span class="mi">music_note</span></div></div>
+      <div class="pb-trk"><div class="pb-tit" id="pbTit">No track</div><div class="pb-art" id="pbArt">—</div></div>
+      <button class="pb-b" id="pbLk" onclick="toggleLike()"><span class="mi">favorite_border</span></button>
+      <button class="pb-b" onclick="saveToPl()"><span class="mi">playlist_add</span></button>
+    </div>
+    <div class="pb-c">
+      <div class="pb-ctrls">
+        <button class="ctrl" id="ctSh" onclick="toggleShuffle()"><span class="mi">shuffle</span></button>
+        <button class="ctrl" onclick="prevT()"><span class="mi">skip_previous</span></button>
+        <button class="play-btn" onclick="togglePlay()"><span class="mi" id="pbIcon">play_arrow</span></button>
+        <button class="ctrl" onclick="nextT()"><span class="mi">skip_next</span></button>
+        <button class="ctrl" id="ctRp" onclick="toggleRepeat()"><span class="mi">repeat</span></button>
+      </div>
+      <div class="pb-prog">
+        <span class="pb-t" id="tC">0:00</span>
+        <div class="pb-bar" onclick="seekBar(event)"><div class="pb-fill" id="pFill"></div></div>
+        <span class="pb-t" id="tD">—</span>
+      </div>
+    </div>
+    <div class="pb-r">
+      <div class="vol-w">
+        <button class="ctrl" id="volIc" onclick="muteT()"><span class="mi">volume_up</span></button>
+        <input type="range" class="vol-sl" id="volSl" min="0" max="100" value="80" oninput="setVol(this.value)"/>
+      </div>
+      <button class="ib" onclick="saveToPl()"><span class="mi">save</span></button>
+    </div>
+  </div></div>
+
+  <div class="mob-player" id="mobPl">
+    <div class="mob-prog"><div class="mob-prog-fill" id="mFill"></div></div>
+    <div class="mob-row" onclick="openSheet()">
+      <div class="mob-aw" id="mAW"><div class="mob-aw-ph"><span class="mi">music_note</span></div></div>
+      <div class="mob-mid"><div class="mob-tit" id="mTit">No track</div><div class="mob-sub" id="mSub">Tap to browse</div></div>
+      <div class="mob-ctrl">
+        <button class="mob-lk" id="mLk" onclick="event.stopPropagation();toggleLike()"><span class="mi">favorite_border</span></button>
+        <button class="mob-pp" onclick="event.stopPropagation();togglePlay()"><span class="mi" id="mIcon">play_arrow</span></button>
+        <button class="mob-nx" onclick="event.stopPropagation();nextT()"><span class="mi">skip_next</span></button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mob-nav"><div class="mob-nav-row" id="mobNavRow"></div></nav>
+</div>
+
+<div class="psheet" id="pSheet">
+  <div class="ps-bg" id="psBg"></div><div class="ps-dark"></div>
+  <div class="ps-inner">
+    <div class="ps-pill"></div>
+    <div class="ps-top">
+      <button class="ps-dn" onclick="closeSheet()"><span class="mi">keyboard_arrow_down</span>Now Playing</button>
+      <span class="ps-src" style="border-color:rgba(0,200,100,.4);color:#00c878;background:rgba(0,200,100,.1)">♫ Full Song</span>
+    </div>
+    <div class="ps-art-area"><div class="ps-art-ph" id="psArt"><span class="mi">music_note</span></div></div>
+    <div class="ps-meta">
+      <div class="ps-tit" id="psTit">No track</div>
+      <div class="ps-row"><div class="ps-art2" id="psArt2">—</div>
+        <button class="ps-lk" id="psLk" onclick="toggleLike()"><span class="mi">favorite_border</span></button>
+      </div>
+    </div>
+    <div class="ps-prog-area">
+      <div class="ps-bar" onclick="seekSheet(event)" id="psBarW"><div class="ps-fill" id="psFill"></div></div>
+      <div class="ps-times"><span id="psC">0:00</span><span id="psD">—</span></div>
+    </div>
+    <div class="ps-ctrls">
+      <button class="ps-c" id="psSh" onclick="toggleShuffle()"><span class="mi">shuffle</span></button>
+      <button class="ps-c" onclick="prevT()"><span class="mi">skip_previous</span></button>
+      <button class="ps-pp" onclick="togglePlay()"><span class="mi" id="psIcon">play_arrow</span></button>
+      <button class="ps-c" onclick="nextT()"><span class="mi">skip_next</span></button>
+      <button class="ps-c" id="psRp" onclick="toggleRepeat()"><span class="mi">repeat</span></button>
+    </div>
+    <div class="ps-ex">
+      <button class="ps-xb" onclick="saveToPl()"><span class="mi">playlist_add</span></button>
+      <button class="ps-xb" id="psEQ" onclick="toggleEQ()"><span class="mi">equalizer</span></button>
+      <div style="display:flex;align-items:center;gap:7px;flex:1;max-width:140px">
+        <button class="ps-xb" id="psVI" onclick="muteT()"><span class="mi">volume_up</span></button>
+        <input style="-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:99px;background:var(--s4);outline:none;cursor:pointer"
+          id="psVol" type="range" min="0" max="100" value="80" oninput="setVol(this.value)"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="eq-panel" id="eqPanel">
+  <div class="eq-head"><div class="eq-title">Equalizer</div><div class="eq-tr"><span>ON</span><div class="tog on" id="eqTog" onclick="toggleEQOn()"></div></div></div>
+  <div class="eq-pres" id="eqPres"></div>
+  <div class="eq-bands" id="eqBands"></div>
+  <div class="eq-ft"><button class="eq-b" onclick="applyPreset('Flat')">Reset</button><button class="eq-b" onclick="toggleEQ()">Close</button></div>
+</div>
+
+<div class="toast" id="toast"><span class="mi">check_circle</span><span id="toastTxt"></span></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
