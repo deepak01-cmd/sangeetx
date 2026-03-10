@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#08080f"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>SangeetX</title>
+<link rel="manifest" href="/manifest.json"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="shell">
+  <div class="top-row">
+
+    <!-- ── SIDEBAR ────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-ic"><span class="mi">music_note</span></div>
+        <div><div class="logo-nm">SangeetX</div><div class="logo-sb">Full Songs · Free</div></div>
+      </div>
+      <nav class="snav">
+        <div class="sni on" onclick="goNav('home',this)"><span class="mi">home</span>Home</div>
+        <div class="sni" onclick="goNav('sv',this)"><span class="mi">search</span>Search</div>
+        <div class="sni" onclick="goNav('rv',this)"><span class="mi">trending_up</span>Trending<span class="snb">🔥</span></div>
+        <div class="sni" onclick="goNav('plv',this)"><span class="mi">library_music</span>Library</div>
+        <div class="scat">Library</div>
+        <div class="sni" onclick="goNav('recv',this)"><span class="mi">history</span>Recent</div>
+        <div class="sni" onclick="goNav('lkv',this)"><span class="mi">favorite</span>Liked</div>
+      </nav>
+      <div class="sq-head"><span class="sq-lbl">Up Next</span><button class="sq-clr" onclick="clearQ()">Clear</button></div>
+      <div class="sq-wrap"><div id="qEl"></div></div>
+    </aside>
+
+    <!-- ── MAIN COLUMN ────────────────────────────────── -->
+    <div class="maincol">
+      <!-- topbar -->
+      <div class="topbar">
+        <div class="srch">
+          <span class="mi srch-ic">search</span>
+          <input id="sIn" type="text" placeholder="Search songs, albums, artists…" autocomplete="off"/>
+          <button class="srch-clr" id="srchClr"><span class="mi">close</span></button>
+        </div>
+        <div class="tb-r">
+          <button id="btnInstall"><span class="mi">download</span>Install App</button>
+          <button class="sl-badge" id="slBadge" onclick="togglePanel('sleepPanel')"><span class="mi">bedtime</span><span id="slTime">0m</span></button>
+          <button class="ib" id="iBsh" title="Shuffle" onclick="toggleShuffle()"><span class="mi">shuffle</span></button>
+          <button class="ib" id="iBrp" title="Repeat" onclick="toggleRepeat()"><span class="mi">repeat</span></button>
+          <button class="ib" id="iBxf" title="Crossfade" onclick="togglePanel('xfPanel')"><span class="mi">swap_horiz</span></button>
+          <button class="ib" id="iBEQ" title="Equalizer" onclick="togglePanel('eqPanel')"><span class="mi">equalizer</span></button>
+        </div>
+      </div>
+
+      <!-- content views -->
+      <div class="content">
+
+        <!-- HOME -->
+        <div class="view on" id="home">
+          <div class="nphero" onclick="openSheet()">
+            <div class="np-ph" id="npArt"><span class="mi">music_note</span></div>
+            <div class="np-info">
+              <div class="np-stat-row"><span class="np-dot"></span><span class="np-stat" id="npStat">Ready</span></div>
+              <div class="np-tit" id="npTit">Pick a track to start 🎵</div>
+              <div class="np-art" id="npArt2">Full songs · 320kbps</div>
+              <div class="np-prog-wrap" onclick="event.stopPropagation();seekHero(event)">
+                <div class="np-prog" id="npProgW"><div class="np-fill" id="npFill"></div></div>
+                <div class="np-times"><span id="npCur">0:00</span><span id="npDur">—</span></div>
+              </div>
+              <div class="np-wave" id="npWave"><div class="nw"></div><div class="nw"></div><div class="nw"></div><div class="nw"></div><div class="nw"></div><div class="nw"></div><div class="nw"></div></div>
+            </div>
+          </div>
+          <div class="chips" id="chipsEl"></div>
+          <div class="sec"><div class="sec-title" id="hTit">Bollywood</div><span class="pill p-sv">JioSaavn</span></div>
+          <div class="cards" id="hCards"></div>
+        </div>
+
+        <!-- SEARCH -->
+        <div class="view" id="sv">
+          <div class="sec"><div class="sec-title" id="sTit">Search Results</div></div>
+          <div id="sList"></div>
+          <div class="empty" id="sEmpty" style="display:none"><span class="mi">search</span><p>No results found</p></div>
+        </div>
+
+        <!-- TRENDING -->
+        <div class="view" id="rv">
+          <div class="sec"><div class="sec-title">Trending Now</div><span class="pill p-re">🔥 Hot</span></div>
+          <div class="reel-row" id="reelRow"></div>
+          <div class="sec"><div class="sec-title">All Tracks</div></div>
+          <div class="tl" id="reelList"></div>
+        </div>
+
+        <!-- LIBRARY -->
+        <div class="view" id="plv">
+          <!-- grid of playlists -->
+          <div id="plvHome">
+            <div class="sec"><div class="sec-title">My Library</div></div>
+            <div class="lib-grid" id="libGrid"></div>
+          </div>
+          <!-- playlist detail -->
+          <div id="plvDetail" style="display:none">
+            <div class="sec">
+              <button class="sec-back" onclick="backToLib()"><span class="mi">arrow_back</span>Library</button>
+            </div>
+            <div class="pl-hero">
+              <div class="pl-hero-ic" id="plDIc"><span class="mi" id="plDIcIc">favorite</span></div>
+              <div><div class="pl-hero-nm" id="plDNm">Playlist</div><div class="pl-hero-sub" id="plDSub">0 songs</div></div>
+              <div class="pl-acts">
+                <button class="btn btn-r" onclick="playPlDetail()"><span class="mi" style="font-size:14px;color:#fff">play_arrow</span>Play All</button>
+                <button class="btn btn-g" onclick="deleteFromPlDetail()"><span class="mi" style="font-size:14px">delete_sweep</span>Clear</button>
+              </div>
+            </div>
+            <div class="tl" id="plDList"></div>
+            <div class="empty" id="plDEmpty" style="display:none"><span class="mi">playlist_add</span><p>Add songs from any track list</p></div>
+          </div>
+        </div>
+
+        <!-- RECENT -->
+        <div class="view" id="recv">
+          <div class="sec"><div class="sec-title">Recently Played</div></div>
+          <div class="tl" id="recList"></div>
+          <div class="empty" id="recEmpty"><span class="mi">history</span><p>Your history appears here</p></div>
+        </div>
+
+        <!-- LIKED -->
+        <div class="view" id="lkv">
+          <div class="sec">
+            <div class="sec-title">Liked Songs</div>
+            <span id="lkCnt" style="font-size:.73rem;color:var(--t3);font-weight:700"></span>
+            <button class="btn btn-r" onclick="playLiked()" style="margin-left:auto;padding:6px 13px"><span class="mi" style="font-size:14px;color:#fff">play_arrow</span>Play All</button>
+          </div>
+          <div class="tl" id="lkList"></div>
+          <div class="empty" id="lkEmpty"><span class="mi">favorite_border</span><p>Like songs with ♥</p></div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /maincol -->
+  </div><!-- /top-row -->
+
+  <!-- ── DESKTOP PLAYER BAR ─────────────────────────── -->
+  <div class="player-bar">
+    <div class="xf-bar" id="xfBar"></div>
+    <div class="pb">
+      <div class="pb-l">
+        <div class="pb-iw" id="pbIW"><div class="pb-iph"><span class="mi">music_note</span></div></div>
+        <div class="pb-trk"><div class="pb-tit" id="pbTit">No track</div><div class="pb-sub" id="pbArt">—</div></div>
+        <button class="pb-b" id="pbLk" onclick="toggleLike()"><span class="mi">favorite_border</span></button>
+        <button class="pb-b" onclick="quickSave()"><span class="mi">playlist_add</span></button>
+      </div>
+      <div class="pb-c">
+        <div class="pb-ctrls">
+          <button class="ctrl" id="ctSh" onclick="toggleShuffle()"><span class="mi">shuffle</span></button>
+          <button class="ctrl" onclick="prevT()"><span class="mi">skip_previous</span></button>
+          <button class="play-btn" onclick="togglePlay()"><span class="mi" id="pbIcon">play_arrow</span></button>
+          <button class="ctrl" onclick="nextT()"><span class="mi">skip_next</span></button>
+          <button class="ctrl" id="ctRp" onclick="toggleRepeat()"><span class="mi">repeat</span></button>
+        </div>
+        <div class="pb-prog">
+          <span class="pb-t" id="tC">0:00</span>
+          <div class="pb-bar" onclick="seekBar(event)"><div class="pb-fill" id="pFill"></div></div>
+          <span class="pb-t" id="tD">—</span>
+        </div>
+      </div>
+      <div class="pb-r">
+        <div class="vol-w">
+          <button class="ctrl" id="volIc" onclick="muteT()"><span class="mi">volume_up</span></button>
+          <input type="range" class="vol-sl" id="volSl" min="0" max="100" value="80" oninput="setVol(this.value)"/>
+        </div>
+        <button class="ib" onclick="quickSave()"><span class="mi">save</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MOBILE MINI PLAYER ─────────────────────────── -->
+  <div class="mob-player" id="mobPl">
+    <div class="mob-prog"><div class="mob-prog-fill" id="mFill"></div></div>
+    <div class="mob-row" onclick="openSheet()">
+      <div class="mob-aw" id="mAW"><div class="mob-aw-ph"><span class="mi">music_note</span></div></div>
+      <div class="mob-mid"><div class="mob-tit" id="mTit">No track</div><div class="mob-sub" id="mSub">Tap to browse</div></div>
+      <div class="mob-ctrl">
+        <button class="mob-lk" id="mLk" onclick="event.stopPropagation();toggleLike()"><span class="mi">favorite_border</span></button>
+        <button class="mob-pp" onclick="event.stopPropagation();togglePlay()"><span class="mi" id="mIcon">play_arrow</span></button>
+        <button class="mob-nx" onclick="event.stopPropagation();nextT()"><span class="mi">skip_next</span></button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mob-nav"><div class="mob-nav-row" id="mobNavRow"></div></nav>
+</div><!-- /shell -->
+
+<!-- ── PLAYER SHEET ────────────────────────────────── -->
+<div class="psheet" id="pSheet">
+  <div class="ps-bg" id="psBg"></div>
+  <div class="ps-dark"></div>
+  <div class="ps-inner">
+    <div class="ps-pill"></div>
+    <div class="ps-top">
+      <button class="ps-dn" onclick="closeSheet()"><span class="mi">keyboard_arrow_down</span>Now Playing</button>
+      <span class="ps-badge" style="border:1px solid rgba(0,200,100,.35);color:#00c878;background:rgba(0,200,100,.09)">♫ Full Song</span>
+    </div>
+    <div class="ps-art-area">
+      <div class="ps-art-ph" id="psArt"><span class="mi">music_note</span></div>
+    </div>
+    <div class="ps-meta">
+      <div class="ps-tit" id="psTit">No track</div>
+      <div class="ps-row2">
+        <div class="ps-sub" id="psSub">—</div>
+        <button class="ps-lk" id="psLk" onclick="toggleLike()"><span class="mi">favorite_border</span></button>
+      </div>
+    </div>
+    <div class="ps-prog-area">
+      <div class="ps-bar" id="psBarW" onclick="seekSheet(event)"><div class="ps-fill" id="psFill"></div></div>
+      <div class="ps-times"><span id="psC">0:00</span><span id="psD">—</span></div>
+    </div>
+    <div class="ps-ctrls">
+      <button class="ps-c" id="psSh" onclick="toggleShuffle()"><span class="mi">shuffle</span></button>
+      <button class="ps-c" onclick="prevT()"><span class="mi">skip_previous</span></button>
+      <button class="ps-pp" onclick="togglePlay()"><span class="mi" id="psIcon">play_arrow</span></button>
+      <button class="ps-c" onclick="nextT()"><span class="mi">skip_next</span></button>
+      <button class="ps-c" id="psRp" onclick="toggleRepeat()"><span class="mi">repeat</span></button>
+    </div>
+    <div class="ps-extra">
+      <button class="ps-xb" onclick="quickSave()"><span class="mi">playlist_add</span></button>
+      <button class="ps-xb" id="psEQ" onclick="togglePanel('eqPanel')"><span class="mi">equalizer</span></button>
+      <button class="ps-xb" id="psSl" onclick="togglePanel('sleepPanel')"><span class="mi">bedtime</span></button>
+      <button class="ps-xb" id="psXF" onclick="togglePanel('xfPanel')"><span class="mi">swap_horiz</span></button>
+      <div style="display:flex;align-items:center;gap:6px;flex:1;max-width:130px">
+        <button class="ps-xb" id="psVI" onclick="muteT()"><span class="mi">volume_up</span></button>
+        <input style="-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:99px;background:var(--s4);outline:none;cursor:pointer" id="psVol" type="range" min="0" max="100" value="80" oninput="setVol(this.value)"/>
+      </div>
+    </div>
+    <!-- Tabs: Lyrics | Queue -->
+    <div class="ps-tabs">
+      <div class="ps-tab on" id="tabLyrics" onclick="switchTab('lyrics')">Lyrics</div>
+      <div class="ps-tab" id="tabQueue" onclick="switchTab('queue')">Up Next</div>
+    </div>
+    <div class="ps-panel on" id="lyricsPanel"></div>
+    <div class="ps-panel" id="queuePanel"></div>
+  </div>
+</div>
+
+<!-- ── EQ PANEL ───────────────────────────────────── -->
+<div class="float-panel eq-panel" id="eqPanel">
+  <div class="panel-head">
+    <div class="panel-title eq-c">Equalizer</div>
+    <div class="tog-row"><span>ON</span><div class="tog on" id="eqTog" onclick="toggleEQOn()"></div></div>
+  </div>
+  <div class="eq-pres" id="eqPres"></div>
+  <div class="eq-bands" id="eqBands"></div>
+  <div class="eq-foot"><button class="eq-b" onclick="applyPreset('Flat')">Reset</button><button class="eq-b" onclick="togglePanel('eqPanel')">Close</button></div>
+</div>
+
+<!-- ── SLEEP TIMER PANEL ──────────────────────────── -->
+<div class="float-panel sleep-panel" id="sleepPanel">
+  <div class="panel-head"><div class="panel-title sl-c">Sleep Timer</div></div>
+  <div class="panel-opts">
+    <div class="popt" data-min="0" onclick="setSleep(0)"><span class="mi">timer_off</span>Off</div>
+    <div class="popt" data-min="15" onclick="setSleep(15)"><span class="mi">bedtime</span>15 minutes</div>
+    <div class="popt" data-min="30" onclick="setSleep(30)"><span class="mi">bedtime</span>30 minutes</div>
+    <div class="popt" data-min="45" onclick="setSleep(45)"><span class="mi">bedtime</span>45 minutes</div>
+    <div class="popt" data-min="60" onclick="setSleep(60)"><span class="mi">bedtime</span>1 hour</div>
+    <div class="popt" data-min="90" onclick="setSleep(90)"><span class="mi">nights_stay</span>90 minutes</div>
+  </div>
+</div>
+
+<!-- ── CROSSFADE PANEL ────────────────────────────── -->
+<div class="float-panel xf-panel" id="xfPanel">
+  <div class="panel-head"><div class="panel-title xf-c">Crossfade</div></div>
+  <div class="panel-opts">
+    <div class="popt xf on" data-sec="0" onclick="setXfade(0)"><span class="mi">close</span>Off</div>
+    <div class="popt xf" data-sec="2" onclick="setXfade(2)"><span class="mi">swap_horiz</span>2 seconds</div>
+    <div class="popt xf" data-sec="4" onclick="setXfade(4)"><span class="mi">swap_horiz</span>4 seconds</div>
+    <div class="popt xf" data-sec="6" onclick="setXfade(6)"><span class="mi">swap_horiz</span>6 seconds</div>
+    <div class="popt xf" data-sec="8" onclick="setXfade(8)"><span class="mi">swap_horiz</span>8 seconds</div>
+  </div>
+</div>
+
+<!-- ── NEW PLAYLIST MODAL ─────────────────────────── -->
+<div class="overlay" id="newPlOv" onclick="closeModal('newPlOv')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">New Playlist</div>
+    <input class="modal-inp" id="newPlName" type="text" placeholder="Playlist name…" maxlength="40"/>
+    <div class="ic-grid" id="newPlIcGrid"></div>
+    <div class="modal-row">
+      <button class="btn btn-n" onclick="closeModal('newPlOv')">Cancel</button>
+      <button class="btn btn-r" onclick="createPlaylist()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD TO PLAYLIST MODAL ──────────────────────── -->
+<div class="overlay" id="atpOv" onclick="closeModal('atpOv')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Add to Playlist</div>
+    <div class="atp-list" id="atpList"></div>
+    <div class="modal-row"><button class="btn btn-n" onclick="closeModal('atpOv')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- ── TOAST ──────────────────────────────────────── -->
+<div class="toast" id="toast"><span class="mi">check_circle</span><span id="toastTxt"></span></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

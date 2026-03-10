@@ -1,48 +1,67 @@
-# SangeetX — Deployment Guide
+# 🎵 SangeetX
 
-## Why this structure?
-The previous version used `saavn.dev` — a third-party proxy that went offline.
-This version runs its OWN backend on Netlify Functions (serverless), calling JioSaavn
-directly from the server. No third-party proxy. No CORS issues. Full 320kbps songs.
+Free full-song music player — Bollywood, Punjabi, Tamil & more. 320kbps. No login. No ads.
 
-## Folder structure
+## 🚀 Deploy to Vercel (Free — 2 minutes)
+
+### Option A — Drag & Drop (no Git needed)
+
+1. Go to [vercel.com](https://vercel.com) → Sign up free (GitHub/Google)
+2. Click **Add New → Project**
+3. Scroll down → click **"Browse"** under *Import from your computer*  
+   *(or just drag the unzipped folder onto the page)*
+4. Click **Deploy**
+5. Done ✅ — Vercel gives you a free `.vercel.app` URL instantly
+
+### Option B — GitHub + Vercel (auto-deploy on every push)
+
+1. Create a GitHub repo, upload these files
+2. On Vercel → **Add New → Project → Import Git Repository**
+3. Select your repo → click **Deploy**
+4. Every `git push` auto-deploys 🎉
+
+---
+
+## 📁 Project Structure
+
 ```
-sangeetx5/
-├── netlify.toml              ← Netlify config (auto-detected)
-├── netlify/
-│   └── functions/
-│       └── api.js            ← Serverless function (the backend proxy)
-└── public/
-    ├── index.html
-    ├── style.css
-    ├── data.js
-    └── app.js
+sangeetx-vercel/
+├── api/
+│   ├── search.js      ← Vercel serverless function (replaces Netlify function)
+│   └── lyrics.js      ← Vercel serverless function for lyrics
+├── public/
+│   ├── index.html
+│   ├── style.css
+│   ├── app.js
+│   ├── data.js        ← calls /api/search and /api/lyrics
+│   ├── sw.js
+│   ├── manifest.json
+│   └── icons/
+│       ├── icon-192.png
+│       └── icon-512.png
+└── vercel.json        ← routes /api/* to functions, serves public/
 ```
 
-## How to deploy on Netlify
+**No npm, no build step.** Vercel detects the `api/` folder automatically.
 
-### Option A — Netlify Drop (easiest, no account setup)
-1. Go to https://app.netlify.com/drop
-2. Drag the entire `sangeetx5` FOLDER onto the page
-3. Done — it auto-deploys with the serverless function
+---
 
-### Option B — GitHub + Netlify (recommended for updates)
-1. Push this folder to a GitHub repo
-2. Go to https://app.netlify.com → "Add new site" → "Import from Git"
-3. Select your repo
-4. Build settings are auto-detected from `netlify.toml`
-5. Deploy
+## ✨ Features
 
-## How it works
-- Browser calls `/api?action=search&query=...`
-- Netlify routes that to `netlify/functions/api.js`
-- The function calls JioSaavn's own API server-side (no CORS)
-- Returns clean JSON with full 320kbps MP3 URLs
-- Browser plays audio with `<audio>` tag
+- 🎵 Full songs at 320kbps via JioSaavn
+- 🔍 Search songs, albums & artists
+- 📂 Multiple playlists with custom icons/colors
+- 🎚️ 8-band Equalizer with presets
+- 🔊 Crossfade (2–8 seconds)
+- ⏱️ Sleep timer
+- 📖 Lyrics
+- 📱 PWA — install to home screen
+- 🔀 Shuffle, repeat, queue management
+- ⌨️ Keyboard shortcuts (Space, ←→, L)
 
-## Local development
-```bash
-npm install -g netlify-cli
-netlify dev
-# Opens at http://localhost:8888
-```
+---
+
+## 🔌 API
+
+Uses [saavn.dev](https://saavn.dev) — free, open-source, no API key needed.  
+The Vercel functions proxy requests server-side (avoids any CORS issues).
